@@ -26,8 +26,8 @@ while (n--) {
   hist.add(Math.random() * 50 | 0);
 }
 
-hist.load(function(err, bins){
-  console.log(bins)
+hist.load(function(err, res){
+  console.log(res)
 });
 ```
 
