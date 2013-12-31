@@ -64,6 +64,7 @@ Histogram.prototype.load = function(fn){
 
   this.db.hgetall(this.key, function(err, res){
     if (err) return fn(err);
+    if (!res) return fn();
 
     var bins = [];
     for (var i = 0; i < self.bins; i++) {
