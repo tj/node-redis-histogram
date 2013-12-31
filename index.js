@@ -9,6 +9,7 @@ var fs = require('fs');
 // lua script
 
 var script = fs.readFileSync(__dirname + '/bin.lua', 'utf8');
+var hash;
 
 /**
  * Expose `Histogram`.
@@ -33,7 +34,7 @@ function Histogram(opts) {
   this.key = opts.key || 'histogram';
   this.bins = opts.bins || 100;
   this.db = opts.client;
-  this.loadScript();
+  if (!hash) this.loadScript();
 }
 
 /**
@@ -44,9 +45,9 @@ function Histogram(opts) {
 
 Histogram.prototype.loadScript = function(){
   var self = this;
-  this.db.send_command('SCRIPT', ['LOAD', script], function(err, hash){
+  this.db.send_command('SCRIPT', ['LOAD', script], function(err, res){
     if (err) throw err;
-    self.hash = hash;
+    hash = res;
   });
 };
 
@@ -61,8 +62,8 @@ Histogram.prototype.loadScript = function(){
  */
 
 Histogram.prototype.add = function(n, fn){
-  if (!this.hash) return; // TODO: queue
-  this.db.evalsha(this.hash, 1, this.key, this.bins, n, fn);
+  if (!hash) return; // TODO: queue
+  this.db.evalsha(hash, 1, this.key, this.bins, n, fn);
 };
 
 /**
