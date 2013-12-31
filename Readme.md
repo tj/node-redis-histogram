@@ -31,6 +31,22 @@ hist.load(function(err, bins){
 });
 ```
 
+## API
+
+### Histogram(options)
+
+  - `client` redis client
+  - `key` redis key ["histogram"]
+  - `bins` number of bins [1000]
+
+### Histogram#add(value, [fn])
+
+  Bin `value` with optional callback.
+
+### Histogram#load(fn)
+
+  Load histogram bins.
+
 # License
 
   MIT
