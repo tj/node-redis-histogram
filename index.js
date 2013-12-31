@@ -8,7 +8,7 @@ var fs = require('fs');
 
 // lua script
 
-var script = fs.readFileSync('bin.lua', 'utf8');
+var script = fs.readFileSync(__dirname + '/bin.lua', 'utf8');
 
 /**
  * Expose `Histogram`.
