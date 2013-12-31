@@ -78,16 +78,26 @@ Histogram.prototype.add = function(n, fn){
 Histogram.prototype.load = function(fn){
   var self = this;
 
-  this.db.hgetall(this.key, function(err, res){
+  this.db
+  .multi()
+  .hgetall(this.key + ':aux')
+  .hgetall(this.key)
+  .exec(function(err, res){
     if (err) return fn(err);
-    if (!res) return fn();
+
+    var aux = res[0];
+    var data = res[1];
 
     var bins = [];
     for (var i = 0; i < self.bins; i++) {
-      bins[i] = ~~res[i];
+      bins[i] = ~~data[i];
     }
 
-    fn(null, bins);
+    fn(null, {
+      min: ~~aux.min,
+      max: ~~aux.max,
+      bins: bins
+    });
   });
 };
 

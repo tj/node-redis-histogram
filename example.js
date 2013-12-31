@@ -22,8 +22,6 @@ setTimeout(function(){
 
   histo.load(function(err, data){
     if (err) throw err;
-    data.forEach(function(n){
-      console.log(n);
-    });
+    console.log(data);
   });
 }, 500);

@@ -32,8 +32,10 @@ describe('Histogram', function(){
         yield histo.add(10);
         yield histo.add(9);
 
-        var bins = yield histo.load();
-        bins.should.eql([5, 0, 0, 1, 3]);
+        var res = yield histo.load();
+        res.min.should.equal(1);
+        res.max.should.equal(10);
+        res.bins.should.eql([5, 0, 0, 1, 3]);
       })(done);
     })
   })
