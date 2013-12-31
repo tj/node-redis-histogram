@@ -1,6 +1,6 @@
 {
   "name": "redis-histogram",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "repository": "visionmedia/node-redis-histogram",
   "description": "histogram binning in redis",
   "keywords": [
