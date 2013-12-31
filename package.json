@@ -1,0 +1,21 @@
+{
+  "name": "redis-histogram",
+  "version": "0.0.1",
+  "repository": "visionmedia/node-redis-histogram",
+  "description": "histogram binning in redis",
+  "keywords": [
+    "histo",
+    "histogram",
+    "redis",
+    "stats"
+  ],
+  "dependencies": {},
+  "devDependencies": {
+    "mocha": "*",
+    "should": "*",
+    "redis": "~0.10.0",
+    "co": "~3.0.1",
+    "thunkify": "0.0.1"
+  },
+  "license": "MIT"
+}
