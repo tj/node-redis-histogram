@@ -23,6 +23,7 @@ module.exports = Histogram;
  * - `client` redis client
  * - `key` redis key ["histogram"]
  * - `bins` number of bins [1000]
+ * - `ttl` expirey in milliseconds [1 hour]
  *
  * @param {Object} opts
  * @api public
@@ -33,6 +34,7 @@ function Histogram(opts) {
   assert(opts.client, 'redis .client required');
   this.key = opts.key || 'histogram';
   this.bins = opts.bins || 100;
+  this.ttl = null == opts.ttl ? 3600000 : opts.ttl;
   this.db = opts.client;
   if (!hash) this.loadScript();
 }
@@ -63,7 +65,7 @@ Histogram.prototype.loadScript = function(){
 
 Histogram.prototype.add = function(n, fn){
   if (!hash) return; // TODO: queue
-  this.db.evalsha(hash, 1, this.key, this.bins, n, fn);
+  this.db.evalsha(hash, 1, this.key, this.bins, this.ttl, n, fn);
 };
 
 /**
