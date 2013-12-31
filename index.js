@@ -4,6 +4,11 @@
  */
 
 var assert = require('assert');
+var fs = require('fs');
+
+// lua script
+
+var script = fs.readFileSync('bin.lua', 'utf8');
 
 /**
  * Expose `Histogram`.
@@ -28,15 +33,27 @@ function Histogram(opts) {
   this.key = opts.key || 'histogram';
   this.bins = opts.bins || 100;
   this.db = opts.client;
-  this.min = Infinity;
-  this.max = 0;
+  this.loadScript();
 }
+
+/**
+ * Execute SCRIPT LOAD with binning script.
+ *
+ * @api private
+ */
+
+Histogram.prototype.loadScript = function(){
+  var self = this;
+  this.db.send_command('SCRIPT', ['LOAD', script], function(err, hash){
+    if (err) throw err;
+    self.hash = hash;
+  });
+};
 
 /**
  * Add value `n` to the histogram with optional callback.
  *
- * TODO: batch increments
- * TODO: use lua commands to implement min/max
+ * TODO: batching of values
  *
  * @param {Number} n
  * @param {Function} [fn]
@@ -44,12 +61,8 @@ function Histogram(opts) {
  */
 
 Histogram.prototype.add = function(n, fn){
-  this.min = n < this.min ? n : this.min;
-  this.max = n > this.max ? n : this.max;
-  var d = this.max - this.min;
-  var p = (n - this.min) / d;
-  var b = Math.max(0, (this.bins * p | 0) - 1);
-  this.db.hincrby(this.key, b, 1, fn);
+  if (!this.hash) return; // TODO: queue
+  this.db.evalsha(this.hash, 1, this.key, this.bins, n, fn);
 };
 
 /**

@@ -13,16 +13,17 @@ var histo = new Histogram({
 
 histo.db.flushdb()
 
-var sec = 3000;
+setTimeout(function(){
+  var n = 3000;
 
-var n = sec;
+  while (n--) {
+    histo.add(Math.random() * 100 | 0);
+  }
 
-while (n--) {
-  histo.add(Math.random() * 100 | 0);
-}
-
-histo.load(function(err, data){
-  data.forEach(function(n){
-    console.log(n);
+  histo.load(function(err, data){
+    if (err) throw err;
+    data.forEach(function(n){
+      console.log(n);
+    });
   });
-});
+}, 500);
